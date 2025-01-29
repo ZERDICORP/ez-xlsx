@@ -1,6 +1,8 @@
 # Ez-Xlsx ❤️
 
-### Usage
+![prettier version](https://img.shields.io/badge/release-0.1.0-brightgreen)
+
+## Get Started
 
 Add to your `build.sbt`:
 ```sbt

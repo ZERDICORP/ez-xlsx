@@ -1,6 +1,6 @@
 # Ez-Xlsx ❤️
 
-# Usage
+### Usage
 
 Add to your `build.sbt`:
 ```sbt

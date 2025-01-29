@@ -11,11 +11,11 @@ lazy val root = (project in file("."))
       "org.typelevel" %% "cats-core" % "2.13.0"
     ),
     organization := "com.nanikin",
-    publishTo := Some("GitHub Packages".at("https://maven.pkg.github.com/ZERDICORP/ez-xlsx")),
     credentials += Credentials(
-      "GitHub Packages",
-      "maven.pkg.github.com",
-      "ZERDICORP",
-      sys.env.getOrElse("GITHUB_TOKEN", "")
-    )
+      "Reposilite",
+      "repo.nanikin.ru",
+      "admin",
+      sys.env("REPOSILITE_TOKEN")
+    ),
+    publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )

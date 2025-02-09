@@ -7,7 +7,6 @@ import com.nanikin.ezxlsx.ErrorMsg
 import com.nanikin.ezxlsx.Pos
 import com.nanikin.ezxlsx.PosMap
 import com.nanikin.ezxlsx.Value
-import com.nanikin.ezxlsx.Value.Formula
 
 private[apachepoi] object ApacheFormula {
 
@@ -37,7 +36,7 @@ private[apachepoi] object ApacheFormula {
     s"${col(xy._1)}${xy._2 + 1}"
 
   def resolve(formula: Value.Formula, cellXY: (Int, Int), poses: PosMap): Either[String, String] = {
-    def resolveRef(id: String): Option[ResolvedRef] = {
+    def resolveRef(id: String): Either[String, String] = {
       val (cx, cy) = cellXY
 
       def fromYAxis: Option[ResolvedRef] =
@@ -69,40 +68,25 @@ private[apachepoi] object ApacheFormula {
           ResolvedRef.One(ref(x, y))
         }
 
-      fromYAxis.orElse(fromXAxis).orElse(fromGlobal)
-    }
-
-    def loop(formula: Value.Formula): Either[String, String] = {
-      def mkArgs(args: Seq[Value.Formula]): Either[String, String] = {
-        val (lefts, rights) = args.map(loop).partitionMap(identity)
-        if (lefts.nonEmpty) lefts.mkString(", ").asLeft
-        else rights.mkString(", ").asRight
-      }
-
-      formula match {
-        case Formula.CellRef(id) =>
-          resolveRef(id) match {
-            case Some(resolved) => resolved.show.asRight
-            case None => ErrorMsg.idNotFound(id).asLeft
-          }
-        case Formula.RangeRef(fromId, toId) =>
-          (resolveRef(fromId), resolveRef(toId)) match {
-            case (Some(left: ResolvedRef.One), Some(right: ResolvedRef.One)) =>
-              f"$left:$right".asRight
-            case (None, Some(_)) => ErrorMsg.idNotFound(fromId).asLeft
-            case (Some(_), None) => ErrorMsg.idNotFound(toId).asLeft
-            case _ => ErrorMsg.wrongRangeRef.asLeft
-          }
-        case Formula.Sum(args) => mkArgs(args).map(x => f"SUM($x)")
-        case Formula.Avg(args) => mkArgs(args).map(x => f"AVERAGE($x)")
-        case Formula.Ratio(numerator, denominator) =>
-          for {
-            n <- loop(numerator)
-            d <- loop(denominator)
-          } yield f"($n / $d) * 100"
+      fromYAxis.orElse(fromXAxis).orElse(fromGlobal) match {
+        case Some(resolved) => resolved.show.asRight
+        case None => ErrorMsg.idNotFound(id).asLeft
       }
     }
 
-    loop(formula)
+    val placeholders = "%s".r.findAllMatchIn(formula.v).length
+    if (formula.ids.length != placeholders) {
+      ErrorMsg.wrongFormulaArgs.asLeft
+    } else {
+      val (lefts, rights) = formula.ids.map(resolveRef).partitionMap(identity)
+      if (lefts.nonEmpty) lefts.mkString(", ").asLeft
+      else {
+        rights
+          .foldLeft(formula.v) { (acc, value) =>
+            acc.replaceFirst("%s", value)
+          }
+          .asRight
+      }
+    }
   }
 }

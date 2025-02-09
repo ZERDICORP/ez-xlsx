@@ -13,22 +13,10 @@ package object ezxlsx {
   object Value {
     final case class StrVal(v: String) extends Value
     final case class IntVal(v: Int) extends Value
+    final case class Formula(v: String, ids: Seq[String]) extends Value
 
-    private[ezxlsx] sealed trait Formula extends Value
-
-    object Formula {
-      private[ezxlsx] final case class CellRef(id: String) extends Formula
-      private[ezxlsx] final case class RangeRef(fromId: String, toId: String) extends Formula
-      private[ezxlsx] final case class Sum(args: Seq[Formula]) extends Formula
-      private[ezxlsx] final case class Avg(args: Seq[Formula]) extends Formula
-      private[ezxlsx] final case class Ratio(numerator: CellRef, denominator: CellRef) extends Formula
-
-      def sum(args: Formula*): Sum = Sum(args)
-      def avg(args: Formula*): Avg = Avg(args)
-      def ratio(of: CellRef, by: CellRef): Ratio = Ratio(of, by)
-
-      implicit def cellRefConverter(ref: String): CellRef = CellRef(ref)
-      implicit def rangeRefConverter(ref: (String, String)): RangeRef = RangeRef(ref._1, ref._2)
+    implicit class FormulaOps(v: String) {
+      def wiz(ids: String*): Formula = Formula(v, ids)
     }
 
     trait Converter[T] {

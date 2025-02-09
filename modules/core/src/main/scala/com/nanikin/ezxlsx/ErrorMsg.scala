@@ -9,5 +9,5 @@ object ErrorMsg {
 
   val noCellArg: String = mk("no arg")
   val idNotFound: String => String = id => mk(f"cell id '$id' not found")
-  val wrongRangeRef: String = mk("range ref contains multiple cells id")
+  val wrongFormulaArgs: String = mk("wrong formula ids amount")
 }

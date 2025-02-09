@@ -9,7 +9,7 @@ import org.apache.poi.xssf.usermodel._
 
 private[apachepoi] object ApacheInterpreter {
 
-  def interpret(sheets: Seq[PrepSheet]): XlsxApacheInterpretation = {
+  def interpret(sheets: Seq[PrepSheet]): ApacheInterpretation = {
     val wb = new XSSFWorkbook()
 
     def applyStyles(xCell: XSSFCell, value: Value, classes: Seq[String])(implicit
@@ -84,6 +84,6 @@ private[apachepoi] object ApacheInterpreter {
       }
     }
 
-    XlsxApacheInterpretation(wb)
+    ApacheInterpretation(wb)
   }
 }

@@ -3,3 +3,4 @@
 deploy/*.dmg
 .DS_Store
 .bsp/
+*.xlsx

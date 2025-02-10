@@ -1,6 +1,6 @@
 ThisBuild / version := "1.0.0"
 ThisBuild / versionScheme := Some("semver-spec")
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "2.11.5"
 
 lazy val root = (project in file("."))
   .settings(
@@ -13,7 +13,7 @@ lazy val `ez-xlsx-core` = (project in file("modules/core"))
   .settings(
     name := "ez-xlsx-core",
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-core" % "2.13.0",
+      "org.typelevel" %% "cats-core" % "2.0.0",
       "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test"
     ),
     organization := "com.nanikin",
@@ -21,7 +21,7 @@ lazy val `ez-xlsx-core` = (project in file("modules/core"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      "7InJlwdTtSSBWZi9VT6fSbsT6C21hGEzWfz+XwlCcwVPEy7K5TMcZrW32mly6C/t"
+      sys.props.getOrElse("REPO_TOKEN", "n/a")
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )
@@ -40,7 +40,7 @@ lazy val `ez-xlsx-apache-poi` = (project in file("modules/apache-poi"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      "7InJlwdTtSSBWZi9VT6fSbsT6C21hGEzWfz+XwlCcwVPEy7K5TMcZrW32mly6C/t"
+      sys.props.getOrElse("REPO_TOKEN", "n/a")
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )

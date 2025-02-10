@@ -1,9 +1,11 @@
 ThisBuild / version := "1.0.0"
+ThisBuild / versionScheme := Some("semver-spec")
 ThisBuild / scalaVersion := "2.13.16"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "ez-xlsx"
+    name := "ez-xlsx",
+    publish := {}
   )
   .aggregate(`ez-xlsx-core`, `ez-xlsx-apache-poi`)
 
@@ -19,7 +21,7 @@ lazy val `ez-xlsx-core` = (project in file("modules/core"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      sys.props.getOrElse("REPO_TOKEN", "n/a")
+      "7InJlwdTtSSBWZi9VT6fSbsT6C21hGEzWfz+XwlCcwVPEy7K5TMcZrW32mly6C/t"
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )
@@ -38,12 +40,15 @@ lazy val `ez-xlsx-apache-poi` = (project in file("modules/apache-poi"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      sys.props.getOrElse("REPO_TOKEN", "n/a")
+      "7InJlwdTtSSBWZi9VT6fSbsT6C21hGEzWfz+XwlCcwVPEy7K5TMcZrW32mly6C/t"
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )
   .dependsOn(`ez-xlsx-core`)
 
 lazy val `example-apache-poi` = (project in file("examples/apache-poi"))
-  .settings(name := "example-apache-poi")
+  .settings(
+    name := "example-apache-poi",
+    publish := {}
+  )
   .dependsOn(`ez-xlsx-apache-poi`)

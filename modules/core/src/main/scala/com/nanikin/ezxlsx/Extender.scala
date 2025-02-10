@@ -74,23 +74,23 @@ object Extender {
 
     override private[ezxlsx] def prepare(): Seq[PrepSheet] = {
       def addPosId(key: String, value: (Int, Int))(implicit poses: PosMapMutable): Unit =
-        poses.addOne(Pos.Key.Id(key) -> Pos.Value.XYPos(x = value._1, y = value._2))
+        poses += (Pos.Key.Id(key) -> Pos.Value.XYPos(x = value._1, y = value._2))
 
       def addPosMap(key: Pos.Key.XY, id: String, value: Int)(implicit poses: PosMapMutable): Unit =
         poses.get(key) match {
           case Some(Pos.Value.XYMutableMap(map)) =>
             map.get(id) match {
-              case Some(poses) => map.addOne(id -> (poses :+ value))
-              case None => map.addOne(id -> Seq(value))
+              case Some(poses) => map += (id -> (poses :+ value))
+              case None => map += (id -> Seq(value))
             }
           case None =>
-            poses.addOne(key -> Pos.Value.XYMutableMap(mutable.HashMap.from(Seq(id -> Seq(value)))))
+            poses += (key -> Pos.Value.XYMutableMap(mutable.HashMap(id -> Seq(value))))
         }
 
       def withXY(sheets: Seq[PrepSheet]): Seq[PrepSheet] = {
         def _rows(rows: Seq[PrepRow], yN: Int = 0)(implicit poses: PosMapMutable): Seq[PrepRow] = {
           rows.zipWithIndex.flatMap {
-            case (row: PrepRow, _) if row.id.nonEmpty => none
+            case (row: PrepRow, _) if row.id.nonEmpty => None
             case (row: PrepRow, y) =>
               val cells = row.cells.zipWithIndex.map { case (cell, x) =>
                 val pos = (x, y + yN)
@@ -119,7 +119,7 @@ object Extender {
           val newRows = _rows(sheet.rows)
           val immPoses = mutablePoses.map {
             case (pos, innerMap: Pos.Value.XYMutableMap) =>
-              pos -> Pos.Value.XYMap(innerMap.v.view.mapValues(_.toVector).toMap)
+              pos -> Pos.Value.XYMap(innerMap.v.map { case (k, v) => k -> v.toVector }.toMap)
             case (pos, other: Pos.Value.XYPos) => pos -> other
           }.toMap
           sheet.copy(

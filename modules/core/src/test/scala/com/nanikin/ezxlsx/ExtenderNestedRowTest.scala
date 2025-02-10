@@ -19,12 +19,9 @@ class ExtenderNestedRowTest extends AnyFunSuite {
 
   test("1 row with 2 nested rows") {
     val data = Seq(
-      Data(
-        args = Seq(Arg.Default(1)),
-        nested = Seq(
-          Data(args = Seq(Arg.Default(12))),
-          Data(args = Seq(Arg.Default(13)))
-        )
+      Data(Arg.Default(1)).withNested(
+        Data(Arg.Default(12)),
+        Data(Arg.Default(13))
       )
     )
 

@@ -36,17 +36,17 @@ object NestedTable extends App {
       sheetId = "population-sheet",
       rowId = "list",
       data = Seq(
-        Data("Russia", 140_000_000).withNested(
-          Data("Moscow", 13_000_000),
-          Data("Saint-Petersburg", 5_000_000)
+        Data("Russia", 140000000).withNested(
+          Data("Moscow", 13000000),
+          Data("Saint-Petersburg", 5000000)
         ),
-        Data("USA", 331_000_000).withNested(
-          Data("New York", 8_500_000),
-          Data("Los Angeles", 4_000_000)
+        Data("USA", 331000000).withNested(
+          Data("New York", 8500000),
+          Data("Los Angeles", 4000000)
         ),
-        Data("Japan", 126_000_000).withNested(
-          Data("Tokyo", 9_200_000),
-          Data("Osaka", 2_700_000)
+        Data("Japan", 126000000).withNested(
+          Data("Tokyo", 9200000),
+          Data("Osaka", 2700000)
         )
       )
     )

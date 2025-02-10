@@ -1,6 +1,6 @@
 package com.nanikin.ezxlsx
 
-private[ezxlsx] final case class Data private (
+final case class Data private (
     private[ezxlsx] val args: Seq[Arg],
     private[ezxlsx] val nested: Seq[Data] = Seq.empty
 )

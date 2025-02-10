@@ -24,8 +24,14 @@ package object ezxlsx {
     }
 
     object Converter {
-      implicit val _String: Converter[String] = (value: String) => StrVal(value)
-      implicit val _Int: Converter[Int] = (value: Int) => IntVal(value)
+
+      implicit val _String: Converter[String] = new Converter[String] {
+        override def convert(value: String): Value = StrVal(value)
+      }
+
+      implicit val _Int: Converter[Int] = new Converter[Int] {
+        override def convert(value: Int): Value = IntVal(value)
+      }
     }
 
     implicit def convertToCellValue[T](value: T)(implicit converter: Converter[T]): Value =

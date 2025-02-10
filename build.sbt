@@ -21,7 +21,7 @@ lazy val `ez-xlsx-core` = (project in file("modules/core"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      sys.props.getOrElse("REPO_TOKEN", "n/a")
+      sys.env.getOrElse("REPO_TOKEN", "n/a")
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )
@@ -40,7 +40,7 @@ lazy val `ez-xlsx-apache-poi` = (project in file("modules/apache-poi"))
       "Reposilite",
       "repo.nanikin.ru",
       "admin",
-      sys.props.getOrElse("REPO_TOKEN", "n/a")
+      sys.env.getOrElse("REPO_TOKEN", "n/a")
     ),
     publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
   )

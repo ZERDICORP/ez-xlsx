@@ -78,14 +78,16 @@ private[apachepoi] object ApacheFormula {
     if (formula.ids.length != placeholders) {
       ErrorMsg.wrongFormulaArgs.asLeft
     } else {
-      val (lefts, rights) = formula.ids.map(resolveRef).partitionMap(identity)
-      if (lefts.nonEmpty) lefts.mkString(", ").asLeft
+      val (leftsSeq, rightsSeq) = formula.ids.map(resolveRef).partition(_.isLeft)
+
+      val lefts = leftsSeq.collect { case Left(value) => value }
+      val rights = rightsSeq.collect { case Right(value) => value }
+
+      if (lefts.nonEmpty) Left(lefts.mkString(", "))
       else {
-        rights
-          .foldLeft(formula.v) { (acc, value) =>
-            acc.replaceFirst("%s", value)
-          }
-          .asRight
+        Right(rights.foldLeft(formula.v) { (acc, value) =>
+          acc.replaceFirst("%s", value)
+        })
       }
     }
   }

@@ -1,4 +1,5 @@
-name: default
+
+name: tests
 
 on:
   push:
@@ -8,13 +9,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      JAVA_OPTS: -Xms2048M -Xmx2048M -Xss6M -XX:ReservedCodeCacheSize=256M -Dfile.encoding=UTF-8
     steps:
-    - uses: actions/checkout@v2
-    - name: Run tests
-      run: sbt coverage test
-    - name: Coverage Report
-      run: sbt coverageReport
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        fail_ci_if_error: true
+      - uses: actions/checkout@v4
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: sbt
+      - uses: sbt/setup-sbt@v1
+      - name: Build and test
+        shell: bash
+        run: sbt -v +test

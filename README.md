@@ -16,8 +16,6 @@
 
 ***Ez-Xlsx is a lightweight Scala library for generating Excel files, built on top of Apache POI. It provides a clean and expressive API to simplify `.xlsx` file creation.***
 
-</br>
-
 ## 🔧 Installation
 Add the following lines to your `build.sbt`:  
 ```sbt

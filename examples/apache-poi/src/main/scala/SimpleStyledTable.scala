@@ -11,8 +11,8 @@ object SimpleStyledTable extends App {
       Style.FontSize(12)
     ),
     Class.static("horse-power")(Style.Align.H.Center),
-    Class.byValue("bmw-color") {
-      case Value.StrVal("BMW") =>
+    Class.byVal("bmw-color") {
+      case "BMW" =>
         Seq(
           Style.BgColorHex("#008000"),
           Style.TextColorHex("#FFFFFF")
@@ -23,33 +23,33 @@ object SimpleStyledTable extends App {
           Style.TextColorHex("#000000")
         )
     },
-    Class.byValue("generic-color") {
-      case Value.StrVal("Purple") =>
+    Class.byVal("generic-color") {
+      case "Purple" =>
         Seq(
           Style.BgColorHex("#A020F0"),
           Style.TextColorHex("#FFFFFF")
         )
-      case Value.StrVal("Red") =>
+      case "Red" =>
         Seq(
           Style.BgColorHex("#FF0000"),
           Style.TextColorHex("#FFFFFF")
         )
-      case Value.StrVal("Silver") =>
+      case "Silver" =>
         Seq(
           Style.BgColorHex("#C0C0C0"),
           Style.TextColorHex("#000000")
         )
-      case Value.StrVal("Blue") =>
+      case "Blue" =>
         Seq(
           Style.BgColorHex("#0000FF"),
           Style.TextColorHex("#FFFFFF")
         )
-      case Value.StrVal("White") =>
+      case "White" =>
         Seq(
           Style.BgColorHex("#FFFFFF"),
           Style.TextColorHex("#000000")
         )
-      case Value.StrVal("Black") =>
+      case "Black" =>
         Seq(
           Style.BgColorHex("#000000"),
           Style.TextColorHex("#FFFFFF")

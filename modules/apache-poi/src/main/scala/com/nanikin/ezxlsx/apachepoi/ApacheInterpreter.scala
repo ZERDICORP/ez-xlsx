@@ -12,7 +12,7 @@ private[apachepoi] object ApacheInterpreter {
   def interpret(sheets: Seq[PrepSheet]): ApacheInterpretation = {
     val wb = new XSSFWorkbook()
 
-    def applyStyles(xCell: XSSFCell, value: Value, classes: Seq[String])(implicit
+    def applyStyles(xCell: XSSFCell, value: Value, xy: (Int, Int), classes: Seq[String])(implicit
         stylesTable: Map[String, Class]
     ): Unit = {
       val cellStyle = wb.createCellStyle()
@@ -20,14 +20,15 @@ private[apachepoi] object ApacheInterpreter {
 
       classes.flatMap(stylesTable.get).foreach {
         case Class.Static(_, styles) => ApacheStyle.apply(cellStyle, font, styles)
-        case Class.Dependent(_, styles) => ApacheStyle.apply(cellStyle, font, styles(value))
+        case Class.ValDependent(_, styles) => ApacheStyle.apply(cellStyle, font, styles(value))
+        case Class.PosDependent(_, styles) => ApacheStyle.apply(cellStyle, font, styles(value, xy))
         case Class.Raw(_, styles) => styles(cellStyle, value)
       }
 
       xCell.setCellStyle(cellStyle)
     }
 
-    def addCells(xSheet: XSSFSheet, xRow: XSSFRow, cells: Seq[PrepCell])(implicit
+    def addCells(xSheet: XSSFSheet, xRow: XSSFRow, cells: Seq[PrepCell], commonClasses: Seq[String])(implicit
         stylesTable: Map[String, Class],
         poses: PosMap
     ): Unit =
@@ -43,7 +44,7 @@ private[apachepoi] object ApacheInterpreter {
                 case Right(formula) => xCell.setCellFormula(formula)
               }
           }
-          applyStyles(xCell, value, cell.classes)
+          applyStyles(xCell, value, cell.xy, cell.classes ++ commonClasses)
         }
         if (cell.settings.autoFilter) {
           xSheet.setAutoFilter(
@@ -58,7 +59,7 @@ private[apachepoi] object ApacheInterpreter {
     ): Int =
       rows.foldLeft(start) { case (y, row) =>
         val xRow = xSheet.createRow(y)
-        addCells(xSheet, xRow, row.cells)
+        addCells(xSheet, xRow, row.cells, row.classes)
 
         xRow.setHeightInPoints(row.settings.height)
 

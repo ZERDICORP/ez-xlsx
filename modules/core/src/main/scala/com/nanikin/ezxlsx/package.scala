@@ -8,16 +8,18 @@ package object ezxlsx {
   private[ezxlsx] type PosMapMutable = mutable.HashMap[Pos.Key, Pos.Value.TrulyMutable]
   private[ezxlsx] type PosMap = Map[Pos.Key, Pos.Value.TrulyImmutable]
 
-  sealed trait Value
+  implicit class FormulaOps(v: String) {
+    def <<(ids: String*): Value.Formula = Value.Formula(v, ids)
+  }
+
+  sealed trait Value {
+    val v: Any
+  }
 
   object Value {
     final case class StrVal(v: String) extends Value
     final case class IntVal(v: Int) extends Value
     final case class Formula(v: String, ids: Seq[String]) extends Value
-
-    implicit class FormulaOps(v: String) {
-      def wiz(ids: String*): Formula = Formula(v, ids)
-    }
 
     trait Converter[T] {
       def convert(value: T): Value

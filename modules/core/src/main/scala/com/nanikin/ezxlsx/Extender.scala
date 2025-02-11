@@ -85,6 +85,7 @@ object Extender {
             }
           case None =>
             poses += (key -> Pos.Value.XYMutableMap(mutable.HashMap(id -> Seq(value))))
+          case _ => ()
         }
 
       def withXY(sheets: Seq[PrepSheet]): Seq[PrepSheet] = {
@@ -160,18 +161,20 @@ object Extender {
       }
     def prepRows(rows: Seq[Row]): Seq[PrepRow] = {
       rows.map {
-        case Row.Default(cells, id, nested, settings) =>
+        case Row.Default(cells, id, nested, classes, settings) =>
           PrepRow(
             id = id,
             cells = prepCells(cells),
             nested = prepRows(Seq(nested).flatten),
+            classes = classes,
             settings = settings
           )
-        case Row.Nested(cells, nested, settings) =>
+        case Row.Nested(cells, nested, classes, settings) =>
           PrepRow(
             id = none,
             cells = prepCells(cells),
             nested = prepRows(Seq(nested).flatten),
+            classes = classes,
             settings = settings
           )
       }

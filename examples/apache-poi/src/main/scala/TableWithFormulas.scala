@@ -1,6 +1,5 @@
-import com.nanikin.ezxlsx.Value._
 import com.nanikin.ezxlsx._
-import com.nanikin.ezxlsx.apachepoi._
+import com.nanikin.ezxlsx.apachepoi.interpreter
 
 object TableWithFormulas extends App {
 
@@ -17,14 +16,14 @@ object TableWithFormulas extends App {
       Cell.arg,
       Cell.arg.withId("price-value"),
       Cell.arg.withId("tax-value"),
-      Cell("(%s / %s) * 100".wiz("tax-value", "price-value"))
+      Cell("(%s / %s) * 100" << ("tax-value", "price-value"))
     ).withId("product-list"),
     Row(
       Cell("Total"),
       Cell.empty,
-      Cell("SUBTOTAL(9,%s)".wiz("price-value")).withId("price-total"),
-      Cell("SUBTOTAL(9,%s)".wiz("tax-value")).withId("tax-total"),
-      Cell("(%s / %s) * 100".wiz("tax-total", "price-total"))
+      Cell("SUBTOTAL(9,%s)" << "price-value").withId("price-total"),
+      Cell("SUBTOTAL(9,%s)" << "tax-value").withId("tax-total"),
+      Cell("(%s / %s) * 100" << ("tax-total", "price-total"))
     ).withSettings(height = 30)
   )
     .withName("Cart")

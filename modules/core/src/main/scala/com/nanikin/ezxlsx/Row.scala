@@ -10,6 +10,7 @@ object Row {
       cells: Seq[Cell],
       id: Option[String] = None,
       nested: Option[Row.Nested] = None,
+      classes: Seq[String] = Seq.empty,
       settings: Settings = Settings()
   ) extends Row
 
@@ -19,6 +20,7 @@ object Row {
   private[ezxlsx] final case class Nested(
       cells: Seq[Cell],
       nested: Option[Row.Nested] = None,
+      classes: Seq[String] = Seq.empty,
       settings: Settings = Settings()
   ) extends Row
 
@@ -28,6 +30,7 @@ object Row {
   implicit class DefaultRowOps(row: Default) {
     def withId(id: String): Default = row.copy(id = id.some)
     def withNested(nested: Nested): Default = row.copy(nested = nested.some)
+    def withClasses(classes: String*): Default = row.copy(classes = classes)
 
     def withSettings(
         height: Int = Settings.DEFAULT_HEIGHT
@@ -36,6 +39,7 @@ object Row {
 
   implicit class NestedRowOps(row: Nested) {
     def withNested(nested: Nested): Nested = row.copy(nested = nested.some)
+    def withClasses(classes: String*): Nested = row.copy(classes = classes)
 
     def withSettings(
         height: Int = Settings.DEFAULT_HEIGHT

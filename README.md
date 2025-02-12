@@ -24,7 +24,7 @@ resolvers += "Reposilite".at("https://repo.nanikin.ru/releases")
 libraryDependencies += "com.nanikin" %% "ez-xlsx-apache-poi" % "2.0.0"
 ```
 
-> 🟢 All usage examples can be found [**here**](https://github.com/ZERDICORP/ez-xlsx/tree/master/examples).
+> 🟢 All usage examples can be found [**here**](https://github.com/ZERDICORP/ez-xlsx/tree/master/examples/apache-poi/src/main/scala).
 
 ## 🎯 Philosophy  
 ✅ **Declarative approach** – *You define what the table should look like, and the library handles the rest.*  

@@ -38,7 +38,8 @@ libraryDependencies += "com.nanikin" %% "ez-xlsx-apache-poi" % "2.0.0"
 - **Cell Styling:** Apply various styles to cells, including font, background, and borders, to make your tables more visually appealing.
 - **Multiple Sheets Creation:** Create multiple sheets within a single `.xlsx` file with ease.
 - **Performance Optimized:** Fast and efficient, with minimal dependencies for improved performance.
-- **Note:** Ez-Xlsx is designed **only for writing** Excel files and does not support reading `.xlsx` files.
+
+> Ez-Xlsx is designed **only for writing** Excel files and does not support reading `.xlsx` files.
 
 ## 🤝 Contributing
 We welcome contributions! If you’d like to contribute, feel free to open an [**issue**](https://github.com/ZERDICORP/ez-xlsx/issues) or submit a [**pull request**](https://github.com/ZERDICORP/ez-xlsx/pulls).

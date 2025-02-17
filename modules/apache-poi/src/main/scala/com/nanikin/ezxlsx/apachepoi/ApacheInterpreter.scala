@@ -35,7 +35,7 @@ private[apachepoi] object ApacheInterpreter {
       cells.zipWithIndex.foreach { case (cell, x) =>
         val xCell: XSSFCell = xRow.createCell(x)
         cell.value.foreach { value =>
-          applyStyles(xCell, value, cell.xy, cell.classes ++ commonClasses)
+          applyStyles(xCell, value, cell.xy, commonClasses ++ cell.classes)
           value match {
             case Value.StrVal(v) => xCell.setCellValue(v)
             case Value.IntVal(v) => xCell.setCellValue(v)

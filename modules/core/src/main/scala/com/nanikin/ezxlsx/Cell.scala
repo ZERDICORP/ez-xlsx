@@ -2,7 +2,7 @@ package com.nanikin.ezxlsx
 
 import cats.implicits.catsSyntaxOptionId
 
-private[ezxlsx] sealed trait Cell
+sealed trait Cell
 
 object Cell {
 

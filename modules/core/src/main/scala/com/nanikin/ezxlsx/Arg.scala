@@ -1,6 +1,6 @@
 package com.nanikin.ezxlsx
 
-private[ezxlsx] sealed trait Arg
+sealed trait Arg
 
 object Arg {
   private[ezxlsx] final case class Default(v: Value) extends Arg

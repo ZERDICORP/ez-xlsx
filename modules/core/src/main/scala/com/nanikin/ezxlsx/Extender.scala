@@ -5,6 +5,7 @@ import cats.implicits.none
 import com.nanikin.ezxlsx.prep.PrepCell
 import com.nanikin.ezxlsx.prep.PrepRow
 import com.nanikin.ezxlsx.prep.PrepSheet
+import com.nanikin.ezxlsx.prep.realRowsLen
 
 import scala.collection.mutable
 
@@ -21,25 +22,28 @@ object Extender {
   private final class Impl(sheets: Seq[PrepSheet]) extends Extender {
 
     def row(sheetId: String, rowId: String, data: Seq[Data]): Extender = {
-      def generate(row: PrepRow, data: Seq[Data]): Seq[PrepRow] =
+      def realDataLen(data: Seq[Data]): Int =
+        data.size + data.map(d => realDataLen(d.nested)).sum
+
+      def generate(row: PrepRow, data: Seq[Data], dataLen: Int): Seq[PrepRow] =
         data.map { d =>
           val (cells, _) = row.cells.foldLeft((Seq.empty[PrepCell], 0)) {
             case ((acc, di), cell: PrepCell) if cell.value.nonEmpty =>
-              (acc :+ cell.copy(inOneCopy = data.size == 1), di)
+              (acc :+ cell.copy(inOneCopy = dataLen == 1), di)
             case ((acc, di), cell: PrepCell) if di < d.args.size =>
               val generated = d.args(di) match {
                 case Arg.Default(v) =>
                   Seq(
                     cell.copy(
                       value = v.some,
-                      inOneCopy = data.size == 1
+                      inOneCopy = dataLen == 1
                     )
                   )
                 case Arg.Many(v) =>
                   v.map(x =>
                     cell.copy(
                       value = x.some,
-                      inOneCopy = data.size == 1 && v.size == 1
+                      inOneCopy = dataLen == 1 && v.size == 1
                     )
                   )
               }
@@ -47,11 +51,11 @@ object Extender {
             case ((acc, di), cell: PrepCell) =>
               val withError = cell.copy(
                 value = Value.StrVal(ErrorMsg.noCellArg).some,
-                inOneCopy = data.size == 1
+                inOneCopy = dataLen == 1
               )
               (acc :+ withError, di)
           }
-          val nested = row.nested.flatten(x => generate(x, d.nested))
+          val nested = row.nested.flatten(x => generate(x, d.nested, dataLen))
           row.copy(
             id = none,
             cells = cells,
@@ -61,7 +65,7 @@ object Extender {
 
       def extend(rows: Seq[PrepRow]): Seq[PrepRow] =
         rows.flatMap {
-          case row: PrepRow if row.id.contains(rowId) => generate(row, data)
+          case row: PrepRow if row.id.contains(rowId) => generate(row, data, realDataLen(data))
           case row: PrepRow => Seq(row)
         }
 
@@ -90,30 +94,32 @@ object Extender {
 
       def withXY(sheets: Seq[PrepSheet]): Seq[PrepSheet] = {
         def _rows(rows: Seq[PrepRow], yN: Int = 0)(implicit poses: PosMapMutable): Seq[PrepRow] = {
-          rows.zipWithIndex.flatMap {
-            case (row: PrepRow, _) if row.id.nonEmpty => None
-            case (row: PrepRow, y) =>
+          val (prepRows, _) = rows.foldLeft((Seq.empty[PrepRow], yN)) {
+            case ((acc, y), row: PrepRow) if row.id.nonEmpty => (acc, y)
+            case ((acc, y), row: PrepRow) =>
               val cells = row.cells.zipWithIndex.map { case (cell, x) =>
-                val pos = (x, y + yN)
                 cell.id.foreach { id =>
-                  if (cell.inOneCopy) addPosId(id, pos)
+                  if (cell.inOneCopy) addPosId(id, (x, y))
                   else {
-                    addPosMap(Pos.Key.X(pos._1), id, pos._2)
-                    addPosMap(Pos.Key.Y(pos._2), id, pos._1)
+                    addPosMap(Pos.Key.X(x), id, y)
+                    addPosMap(Pos.Key.Y(y), id, x)
                   }
                 }
                 cell.copy(
-                  xy = pos,
+                  xy = (x, y),
                   value = if (cell.value.isEmpty) Value.StrVal(ErrorMsg.noCellArg).some else cell.value
                 )
               }
-              row
-                .copy(
+              val nest: Seq[PrepRow] = _rows(row.nested, y + 1)
+              (
+                acc :+ row.copy(
                   cells = cells,
-                  nested = _rows(row.nested, y + yN + 1)
-                )
-                .some
+                  nested = nest
+                ),
+                y + realRowsLen(nest) + 1
+              )
           }
+          prepRows
         }
         sheets.map { sheet =>
           implicit val mutablePoses: PosMapMutable = mutable.HashMap.empty
@@ -184,6 +190,8 @@ object Extender {
         name = sheet.name,
         id = sheet.id,
         colsWidth = sheet.colsWidth,
+        colsInFreeze = sheet.colsInFreeze,
+        rowsInFreeze = sheet.rowsInFreeze,
         rows = prepRows(sheet.rows),
         poses = Map.empty,
         styles = sheet.styles

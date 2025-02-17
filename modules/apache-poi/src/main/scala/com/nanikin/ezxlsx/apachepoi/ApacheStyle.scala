@@ -5,9 +5,7 @@ import org.apache.poi.ss.usermodel.BorderStyle
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.VerticalAlignment
-import org.apache.poi.xssf.usermodel.XSSFCellStyle
-import org.apache.poi.xssf.usermodel.XSSFColor
-import org.apache.poi.xssf.usermodel.XSSFFont
+import org.apache.poi.xssf.usermodel.{XSSFCellStyle, XSSFColor, XSSFFont, XSSFWorkbook}
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide
 
 import java.awt.Color
@@ -15,13 +13,21 @@ import java.awt.Color
 private[apachepoi] object ApacheStyle {
 
   def apply(
+      wb: XSSFWorkbook,
       cellStyle: XSSFCellStyle,
       font: XSSFFont,
       styles: Seq[Style]
   ): Unit =
     styles.foreach {
+      case Style.DataFormat(value) =>
+        val format = wb.createDataFormat()
+        cellStyle.setDataFormat(format.getFormat(value))
+
       case Style.Indent(value) =>
         cellStyle.setIndention(value.toShort)
+
+      case Style.FontFamily(value) =>
+        font.setFontName(value)
 
       case Style.FontSize(value) =>
         font.setFontHeightInPoints(value.toShort)

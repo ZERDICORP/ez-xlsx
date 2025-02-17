@@ -3,6 +3,12 @@ import com.nanikin.ezxlsx.apachepoi.interpreter
 
 object TableWithFormulas extends App {
 
+  val styles = Seq(
+    Class.static("percent-format")(
+      Style.DataFormat("0%")
+    )
+  )
+
   val sheet = Sheet(
     Row(
       Cell.empty,
@@ -16,14 +22,14 @@ object TableWithFormulas extends App {
       Cell.arg,
       Cell.arg.withId("price-value"),
       Cell.arg.withId("tax-value"),
-      Cell("(%s / %s) * 100" << ("tax-value", "price-value"))
+      Cell("(%s / %s)" << ("tax-value", "price-value")).withClasses("percent-format")
     ).withId("product-list"),
     Row(
       Cell("Total"),
       Cell.empty,
       Cell("SUBTOTAL(9,%s)" << "price-value").withId("price-total"),
       Cell("SUBTOTAL(9,%s)" << "tax-value").withId("tax-total"),
-      Cell("(%s / %s) * 100" << ("tax-total", "price-total"))
+      Cell("(%s / %s)" << ("tax-total", "price-total")).withClasses("percent-format")
     ).withSettings(height = 30)
   )
     .withName("Cart")
@@ -34,6 +40,7 @@ object TableWithFormulas extends App {
       3 -> 15,
       4 -> 15
     )
+    .withStyles(styles)
 
   val template = Template
     .sheet(sheet)
@@ -47,7 +54,8 @@ object TableWithFormulas extends App {
       data = Seq(
         Data("Milk", 100, 15),
         Data("Beer", 400, 30),
-        Data("Apples", 500, 100)
+        Data("Apples", 500, 100),
+        Data("Fish", 57, 3)
       )
     )
     .interpret()

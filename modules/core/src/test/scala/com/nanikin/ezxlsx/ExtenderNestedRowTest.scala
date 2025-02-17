@@ -34,7 +34,7 @@ class ExtenderNestedRowTest extends AnyFunSuite {
 
     val row = extended.head.rows.head
     assert(row.cells.size == 1)
-    assert(row.cells.count(_.inOneCopy) == 1)
+    assert(row.cells.count(_.inOneCopy) == 0)
     assert {
       row.cells.flatMap(_.value) == Seq(1).map(Value.convertToCellValue[Int])
     }

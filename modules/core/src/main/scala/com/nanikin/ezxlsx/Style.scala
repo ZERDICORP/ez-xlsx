@@ -3,9 +3,12 @@ package com.nanikin.ezxlsx
 sealed trait Style
 
 object Style {
+  final case class DataFormat(value: String) extends Style
+
   final case object TextBold extends Style
   final case object TextWrap extends Style
 
+  final case class FontFamily(value: String) extends Style
   final case class FontSize(value: Int) extends Style
   final case class TextColorHex(value: String) extends Style
   final case class BgColorHex(value: String) extends Style

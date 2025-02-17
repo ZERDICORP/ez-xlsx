@@ -15,13 +15,13 @@ private[apachepoi] object ApacheInterpreter {
     def applyStyles(xCell: XSSFCell, value: Value, xy: (Int, Int), classes: Seq[String])(implicit
         stylesTable: Map[String, Class]
     ): Unit = {
-      val cellStyle = wb.createCellStyle()
+      val cellStyle: XSSFCellStyle = wb.createCellStyle()
       val font = wb.createFont()
 
       classes.flatMap(stylesTable.get).foreach {
-        case Class.Static(_, styles) => ApacheStyle.apply(cellStyle, font, styles)
-        case Class.ValDependent(_, styles) => ApacheStyle.apply(cellStyle, font, styles(value))
-        case Class.PosDependent(_, styles) => ApacheStyle.apply(cellStyle, font, styles(value, xy))
+        case Class.Static(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles)
+        case Class.ValDependent(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles(value))
+        case Class.PosDependent(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles(value, xy))
         case Class.Raw(_, styles) => styles(cellStyle, value)
       }
 
@@ -35,6 +35,7 @@ private[apachepoi] object ApacheInterpreter {
       cells.zipWithIndex.foreach { case (cell, x) =>
         val xCell: XSSFCell = xRow.createCell(x)
         cell.value.foreach { value =>
+          applyStyles(xCell, value, cell.xy, cell.classes ++ commonClasses)
           value match {
             case Value.StrVal(v) => xCell.setCellValue(v)
             case Value.IntVal(v) => xCell.setCellValue(v)
@@ -44,7 +45,6 @@ private[apachepoi] object ApacheInterpreter {
                 case Right(formula) => xCell.setCellFormula(formula)
               }
           }
-          applyStyles(xCell, value, cell.xy, cell.classes ++ commonClasses)
         }
         if (cell.settings.autoFilter) {
           xSheet.setAutoFilter(
@@ -79,6 +79,7 @@ private[apachepoi] object ApacheInterpreter {
       val xSheet = wb.createSheet(sheet.name)
       addRows(xSheet, sheet.rows, start = 0)
       xSheet.setRowSumsBelow(false)
+      xSheet.createFreezePane(sheet.colsInFreeze, sheet.rowsInFreeze)
 
       sheet.colsWidth.map { case (key, width) =>
         xSheet.setColumnWidth(key, width * 256)

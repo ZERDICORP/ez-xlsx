@@ -7,6 +7,8 @@ private[ezxlsx] final case class PrepSheet(
     name: String,
     id: Option[String],
     colsWidth: Map[Int, Int],
+    colsInFreeze: Int,
+    rowsInFreeze: Int,
     rows: Seq[PrepRow],
     styles: Seq[Class],
     poses: PosMap

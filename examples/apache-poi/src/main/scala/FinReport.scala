@@ -62,6 +62,7 @@ object FinReport extends App {
       (4, 12)
     )
     .withStyles(styles)
+    .withFreeze(cols = 2, rows = 1)
 
   val template = Template.sheet(sheet).fixate()
 

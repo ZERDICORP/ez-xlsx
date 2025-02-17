@@ -10,14 +10,18 @@ object NestedTable extends App {
     ).withSettings(height = 30),
     Row(
       Cell.arg,
-      Cell.arg
+      Cell.arg.withId("population")
     ).withId("list")
       .withNested(
         Row.nested(
           Cell.arg,
-          Cell.arg
+          Cell.arg.withId("population")
         )
-      )
+      ),
+    Row(
+      Cell("Total"),
+      Cell("SUM(%s)" << "population")
+    )
   )
     .withName("Population")
     .withId("population-sheet")

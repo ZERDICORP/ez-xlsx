@@ -33,7 +33,7 @@ private[apachepoi] object ApacheFormula {
     colName
   }
 
-  private def ref(xy: (Int, Int)): String =
+  def ref(xy: (Int, Int)): String =
     s"${col(xy._1)}${xy._2 + 1}"
 
   def resolve(formula: Value.Formula, cellXY: (Int, Int), poses: PosMap): Either[String, String] = {

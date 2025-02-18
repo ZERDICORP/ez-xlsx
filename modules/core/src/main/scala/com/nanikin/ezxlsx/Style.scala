@@ -3,6 +3,18 @@ package com.nanikin.ezxlsx
 sealed trait Style
 
 object Style {
+  sealed trait Conditional extends Style
+
+  object Conditional {
+
+    final case class BgColorHex(
+        start: String,
+        mid: String,
+        end: String,
+        percent: Double
+    ) extends Conditional
+  }
+
   final case class DataFormat(value: String) extends Style
 
   final case object TextBold extends Style

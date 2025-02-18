@@ -4,8 +4,14 @@ import com.nanikin.ezxlsx.apachepoi.interpreter
 object TableWithFormulas extends App {
 
   val styles = Seq(
-    Class.static("percent-format")(
-      Style.DataFormat("0%")
+    Class.static("percent")(
+      Style.DataFormat("0%"),
+      Style.Conditional.BgColorHex(
+        start = "63be7b",
+        mid = "ffeb84",
+        end = "f8696b",
+        percent = 50
+      )
     )
   )
 
@@ -22,14 +28,14 @@ object TableWithFormulas extends App {
       Cell.arg,
       Cell.arg.withId("price-value"),
       Cell.arg.withId("tax-value"),
-      Cell("(%s / %s)" << ("tax-value", "price-value")).withClasses("percent-format")
+      Cell("%s / %s" << ("tax-value", "price-value")).withClasses("percent")
     ).withId("product-list"),
     Row(
       Cell("Total"),
       Cell.empty,
       Cell("SUBTOTAL(9,%s)" << "price-value").withId("price-total"),
       Cell("SUBTOTAL(9,%s)" << "tax-value").withId("tax-total"),
-      Cell("(%s / %s)" << ("tax-total", "price-total")).withClasses("percent-format")
+      Cell("%s / %s" << ("tax-total", "price-total")).withClasses("percent")
     ).withSettings(height = 30)
   )
     .withName("Cart")
@@ -52,9 +58,9 @@ object TableWithFormulas extends App {
       sheetId = "cart-sheet",
       rowId = "product-list",
       data = Seq(
-        Data("Milk", 100, 15),
+        Data("Milk", 100, 87),
         Data("Beer", 400, 30),
-        Data("Apples", 500, 100),
+        Data("Apples", 500, 450),
         Data("Fish", 57, 3)
       )
     )

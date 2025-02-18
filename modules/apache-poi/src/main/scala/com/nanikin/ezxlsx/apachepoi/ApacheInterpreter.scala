@@ -12,16 +12,19 @@ private[apachepoi] object ApacheInterpreter {
   def interpret(sheets: Seq[PrepSheet]): ApacheInterpretation = {
     val wb = new XSSFWorkbook()
 
-    def applyStyles(xCell: XSSFCell, value: Value, xy: (Int, Int), classes: Seq[String])(implicit
+    def applyStyles(xCell: XSSFCell, xSheet: XSSFSheet, value: Value, xy: (Int, Int), classes: Seq[String])(implicit
         stylesTable: Map[String, Class]
     ): Unit = {
       val cellStyle: XSSFCellStyle = wb.createCellStyle()
       val font = wb.createFont()
 
+      val cellRef = ApacheFormula.ref(xy)
+
       classes.flatMap(stylesTable.get).foreach {
-        case Class.Static(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles)
-        case Class.ValDependent(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles(value))
-        case Class.PosDependent(_, styles) => ApacheStyle.apply(wb, cellStyle, font, styles(value, xy))
+        case Class.Static(_, styles) => ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles)
+        case Class.ValDependent(_, styles) => ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value))
+        case Class.PosDependent(_, styles) =>
+          ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value, xy))
         case Class.Raw(_, styles) => styles(cellStyle, value)
       }
 
@@ -35,7 +38,7 @@ private[apachepoi] object ApacheInterpreter {
       cells.zipWithIndex.foreach { case (cell, x) =>
         val xCell: XSSFCell = xRow.createCell(x)
         cell.value.foreach { value =>
-          applyStyles(xCell, value, cell.xy, commonClasses ++ cell.classes)
+          applyStyles(xCell, xSheet, value, cell.xy, commonClasses ++ cell.classes)
           value match {
             case Value.StrVal(v) => xCell.setCellValue(v)
             case Value.IntVal(v) => xCell.setCellValue(v)

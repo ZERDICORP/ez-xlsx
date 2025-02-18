@@ -1,24 +1,52 @@
 package com.nanikin.ezxlsx.apachepoi
 
 import com.nanikin.ezxlsx.Style
-import org.apache.poi.ss.usermodel.BorderStyle
-import org.apache.poi.ss.usermodel.FillPatternType
-import org.apache.poi.ss.usermodel.HorizontalAlignment
-import org.apache.poi.ss.usermodel.VerticalAlignment
-import org.apache.poi.xssf.usermodel.{XSSFCellStyle, XSSFColor, XSSFFont, XSSFWorkbook}
+import org.apache.poi.ss.usermodel._
+import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.xssf.usermodel._
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder.BorderSide
 
 import java.awt.Color
 
 private[apachepoi] object ApacheStyle {
 
+  private def applyConditional(xSheet: XSSFSheet, cellRef: String, cond: Style.Conditional): Unit =
+    cond match {
+      case Style.Conditional.BgColorHex(start, mid, end, percent) =>
+        val cf = xSheet.getSheetConditionalFormatting
+        val cfr = xSheet.getSheetConditionalFormatting.createConditionalFormattingColorScaleRule()
+
+        val csf: XSSFColorScaleFormatting = cfr.createColorScaleFormatting()
+
+        csf.getThresholds()(0).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
+        csf.getThresholds()(0).setValue(0)
+
+        csf.getThresholds()(1).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
+        csf.getThresholds()(1).setValue(percent / 100)
+
+        csf.getThresholds()(2).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
+        csf.getThresholds()(2).setValue(1)
+
+        csf.getColors()(0).asInstanceOf[ExtendedColor].setARGBHex(start)
+        csf.getColors()(1).asInstanceOf[ExtendedColor].setARGBHex(mid)
+        csf.getColors()(2).asInstanceOf[ExtendedColor].setARGBHex(end)
+
+        cf.addConditionalFormatting(
+          Array(CellRangeAddress.valueOf(cellRef)),
+          cfr
+        )
+    }
+
   def apply(
       wb: XSSFWorkbook,
+      xSheet: XSSFSheet,
       cellStyle: XSSFCellStyle,
       font: XSSFFont,
+      cellRef: String,
       styles: Seq[Style]
   ): Unit =
     styles.foreach {
+      case cond: Style.Conditional => applyConditional(xSheet, cellRef, cond)
       case Style.DataFormat(value) =>
         val format = wb.createDataFormat()
         cellStyle.setDataFormat(format.getFormat(value))

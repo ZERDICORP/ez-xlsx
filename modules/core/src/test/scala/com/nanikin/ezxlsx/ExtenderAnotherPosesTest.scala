@@ -1,6 +1,7 @@
 package com.nanikin.ezxlsx
 
-import com.nanikin.ezxlsx.prep.{PrepSheet, realRowsLen}
+import com.nanikin.ezxlsx.prep.PrepSheet
+import com.nanikin.ezxlsx.prep.realRowsLen
 import org.scalatest.funsuite.AnyFunSuite
 
 class ExtenderAnotherPosesTest extends AnyFunSuite {
@@ -160,14 +161,3 @@ class ExtenderAnotherPosesTest extends AnyFunSuite {
     }
   }
 }
-
-//Map(
-//  Y(4) -> XYMap(Map(age -> Vector(1))),
-//  Y(6) -> XYMap(Map(age -> Vector(1))),
-//  Y(7) -> XYMap(Map(age -> Vector(1))),
-//  X(1) -> XYMap(Map(age -> Vector(1, 2, 3, 4, 5, 6, 7))),
-//  Y(1) -> XYMap(Map(age -> Vector(1))),
-//  Y(3) -> XYMap(Map(age -> Vector(1))),
-//  Y(5) -> XYMap(Map(age -> Vector(1))),
-//  Y(2) -> XYMap(Map(age -> Vector(1)))
-//)

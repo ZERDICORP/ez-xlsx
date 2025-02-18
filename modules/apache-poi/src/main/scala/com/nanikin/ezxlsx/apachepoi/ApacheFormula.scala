@@ -6,6 +6,7 @@ import cats.implicits.toShow
 import com.nanikin.ezxlsx.ErrorMsg
 import com.nanikin.ezxlsx.Pos
 import com.nanikin.ezxlsx.PosMap
+import com.nanikin.ezxlsx.Utils
 import com.nanikin.ezxlsx.Value
 
 private[apachepoi] object ApacheFormula {
@@ -39,37 +40,43 @@ private[apachepoi] object ApacheFormula {
     def resolveRef(id: String): Either[String, String] = {
       val (cx, cy) = cellXY
 
-      def fromYAxis: Option[ResolvedRef] =
+      def fromYAxis: Option[Seq[ResolvedRef]] =
         poses.get(Pos.Key.Y(cy)).flatMap { case Pos.Value.XYMap(map) =>
           map.get(id).map {
-            case Seq(headX) => ResolvedRef.One(ref(headX, cy))
+            case Seq(headX) => Seq(ResolvedRef.One(ref(headX, cy)))
             case seq =>
-              ResolvedRef.Range(
-                ref(seq.head, cy),
-                ref(seq.last, cy)
+              Seq(
+                ResolvedRef.Range(
+                  ref(seq.head, cy),
+                  ref(seq.last, cy)
+                )
               )
           }
         }
 
-      def fromXAxis: Option[ResolvedRef] =
+      def fromXAxis: Option[Seq[ResolvedRef]] =
         poses.get(Pos.Key.X(cx)).flatMap { case Pos.Value.XYMap(map) =>
           map.get(id).map {
-            case Seq(headY) => ResolvedRef.One(ref(cx, headY))
+            case Seq(headY) => Seq(ResolvedRef.One(ref(cx, headY)))
             case seq =>
-              ResolvedRef.Range(
-                ref(cx, seq.head),
-                ref(cx, seq.last)
-              )
+              Utils.jerkily(seq).map {
+                case Seq(one) => ResolvedRef.One(ref(cx, one))
+                case Seq(from, to) =>
+                  ResolvedRef.Range(
+                    ref(cx, from),
+                    ref(cx, to)
+                  )
+              }
           }
         }
 
-      def fromGlobal: Option[ResolvedRef] =
+      def fromGlobal: Option[Seq[ResolvedRef]] =
         poses.get(Pos.Key.Id(id)).map { case Pos.Value.XYPos(x, y) =>
-          ResolvedRef.One(ref(x, y))
+          Seq(ResolvedRef.One(ref(x, y)))
         }
 
       fromYAxis.orElse(fromXAxis).orElse(fromGlobal) match {
-        case Some(resolved) => resolved.show.asRight
+        case Some(resolved) => resolved.map(_.show).mkString(", ").asRight
         case None => ErrorMsg.idNotFound(id).asLeft
       }
     }

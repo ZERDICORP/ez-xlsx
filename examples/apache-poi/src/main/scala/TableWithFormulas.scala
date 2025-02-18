@@ -6,11 +6,10 @@ object TableWithFormulas extends App {
   val styles = Seq(
     Class.static("percent")(
       Style.DataFormat("0%"),
-      Style.Conditional.BgColorHex(
-        start = "63be7b",
-        mid = "ffeb84",
-        end = "f8696b",
-        percent = 50
+      Style.Conditional.BgColorHexByNumber(
+        start = (0, "63be7b"),
+        mid = (0.5, "ffeb84"),
+        end = (1, "f8696b")
       )
     )
   )

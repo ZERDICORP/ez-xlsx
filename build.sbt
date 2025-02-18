@@ -1,4 +1,4 @@
-ThisBuild / version := "2.3.0"
+ThisBuild / version := "2.3.1"
 ThisBuild / versionScheme := Some("semver-spec")
 ThisBuild / scalaVersion := "2.11.5"
 

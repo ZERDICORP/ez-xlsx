@@ -12,24 +12,24 @@ private[apachepoi] object ApacheStyle {
 
   private def applyConditional(xSheet: XSSFSheet, cellRef: String, cond: Style.Conditional): Unit =
     cond match {
-      case Style.Conditional.BgColorHex(start, mid, end, percent) =>
+      case Style.Conditional.BgColorHexByNumber((startN, startHex), (midN, midHex), (endN, endHex)) =>
         val cf = xSheet.getSheetConditionalFormatting
         val cfr = xSheet.getSheetConditionalFormatting.createConditionalFormattingColorScaleRule()
 
         val csf: XSSFColorScaleFormatting = cfr.createColorScaleFormatting()
 
         csf.getThresholds()(0).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
-        csf.getThresholds()(0).setValue(0)
+        csf.getThresholds()(0).setValue(startN)
 
         csf.getThresholds()(1).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
-        csf.getThresholds()(1).setValue(percent / 100)
+        csf.getThresholds()(1).setValue(midN)
 
         csf.getThresholds()(2).setRangeType(ConditionalFormattingThreshold.RangeType.NUMBER)
-        csf.getThresholds()(2).setValue(1)
+        csf.getThresholds()(2).setValue(endN)
 
-        csf.getColors()(0).asInstanceOf[ExtendedColor].setARGBHex(start)
-        csf.getColors()(1).asInstanceOf[ExtendedColor].setARGBHex(mid)
-        csf.getColors()(2).asInstanceOf[ExtendedColor].setARGBHex(end)
+        csf.getColors()(0).asInstanceOf[ExtendedColor].setARGBHex(startHex)
+        csf.getColors()(1).asInstanceOf[ExtendedColor].setARGBHex(midHex)
+        csf.getColors()(2).asInstanceOf[ExtendedColor].setARGBHex(endHex)
 
         cf.addConditionalFormatting(
           Array(CellRangeAddress.valueOf(cellRef)),

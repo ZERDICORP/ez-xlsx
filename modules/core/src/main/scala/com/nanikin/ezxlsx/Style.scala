@@ -7,11 +7,10 @@ object Style {
 
   object Conditional {
 
-    final case class BgColorHex(
-        start: String,
-        mid: String,
-        end: String,
-        percent: Double
+    final case class BgColorHexByNumber(
+        start: (Double, String),
+        mid: (Double, String),
+        end: (Double, String)
     ) extends Conditional
   }
 

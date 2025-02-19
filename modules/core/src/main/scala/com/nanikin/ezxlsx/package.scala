@@ -19,6 +19,7 @@ package object ezxlsx {
   object Value {
     final case class StrVal(v: String) extends Value
     final case class IntVal(v: Int) extends Value
+    final case class DblVal(v: Double) extends Value
     final case class Formula(v: String, ids: Seq[String]) extends Value
 
     trait Converter[T] {
@@ -33,6 +34,10 @@ package object ezxlsx {
 
       implicit val _Int: Converter[Int] = new Converter[Int] {
         override def convert(value: Int): Value = IntVal(value)
+      }
+
+      implicit val _Dbl: Converter[Double] = new Converter[Double] {
+        override def convert(value: Double): Value = DblVal(value)
       }
     }
 

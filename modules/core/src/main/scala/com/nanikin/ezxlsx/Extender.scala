@@ -32,17 +32,19 @@ object Extender {
               (acc :+ cell.copy(inOneCopy = dataLen == 1), di)
             case ((acc, di), cell: PrepCell) if di < d.args.size =>
               val generated = d.args(di) match {
-                case Arg.Default(v) =>
+                case Arg.Default(v, classes) =>
                   Seq(
                     cell.copy(
                       value = v.some,
+                      classes = cell.classes ++ classes,
                       inOneCopy = dataLen == 1
                     )
                   )
-                case Arg.Many(v) =>
+                case Arg.Many(v, classes) =>
                   v.map(x =>
                     cell.copy(
                       value = x.some,
+                      classes = cell.classes ++ classes,
                       inOneCopy = dataLen == 1 && v.size == 1
                     )
                   )
@@ -59,7 +61,8 @@ object Extender {
           row.copy(
             id = none,
             cells = cells,
-            nested = nested
+            nested = nested,
+            classes = row.classes ++ d.classes
           )
         }
 

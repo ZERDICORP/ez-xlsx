@@ -43,6 +43,7 @@ private[apachepoi] object ApacheInterpreter {
           value match {
             case Value.StrVal(v) => xCell.setCellValue(v)
             case Value.IntVal(v) => xCell.setCellValue(v)
+            case Value.DblVal(v) => xCell.setCellValue(v)
             case f: Value.Formula =>
               ApacheFormula.resolve(f, cell.xy, poses) match {
                 case Left(error) => xCell.setCellValue(error)

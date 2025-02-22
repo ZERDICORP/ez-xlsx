@@ -28,6 +28,7 @@ private[apachepoi] object ApacheInterpreter {
         case Class.Raw(_, styles) => styles(cellStyle, value)
       }
 
+      cellStyle.setFont(font)
       xCell.setCellStyle(cellStyle)
     }
 

@@ -17,6 +17,7 @@ object Style {
   final case class DataFormat(value: String) extends Style
 
   final case object TextBold extends Style
+  final case object TextItalic extends Style
   final case object TextWrap extends Style
 
   final case class FontFamily(value: String) extends Style

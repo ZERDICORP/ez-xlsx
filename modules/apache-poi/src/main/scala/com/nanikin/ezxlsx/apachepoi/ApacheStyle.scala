@@ -63,9 +63,11 @@ private[apachepoi] object ApacheStyle {
       case Style.TextWrap =>
         cellStyle.setWrapText(true)
 
+      case Style.TextItalic =>
+        font.setItalic(true)
+
       case Style.TextBold =>
         font.setBold(true)
-        cellStyle.setFont(font)
 
       case Style.BgColorHex(hex) =>
         val color = Color.decode(hex)
@@ -89,7 +91,6 @@ private[apachepoi] object ApacheStyle {
         val color = Color.decode(hex)
         val xssfColor = new XSSFColor(color, null)
         font.setColor(xssfColor)
-        cellStyle.setFont(font)
 
       case align: Style.Align =>
         align match {

@@ -39,12 +39,24 @@ private[apachepoi] object ApacheInterpreter {
     ): Unit =
       cells.zipWithIndex.foldLeft(Option.empty[Int]) { case (agg, (cell, x)) =>
         val xCell: XSSFCell = xRow.createCell(x)
+
+        def withMapping(v: Value): Value =
+          cell.mapper match {
+            case Some(mapper) =>
+              v match {
+                case _: Value.Formula => v
+                case other: Value => mapper(other.v)
+              }
+            case None => v
+          }
+
         cell.value.foreach { value =>
           applyStyles(xCell, xSheet, value, cell.xy, commonClasses ++ cell.classes)
-          value match {
+          withMapping(value) match {
             case Value.StrVal(v) => xCell.setCellValue(v)
             case Value.IntVal(v) => xCell.setCellValue(v)
             case Value.DblVal(v) => xCell.setCellValue(v)
+            case Value.BolVal(v) => xCell.setCellValue(v)
             case f: Value.Formula =>
               ApacheFormula.resolve(f, cell.xy, poses) match {
                 case Left(error) => xCell.setCellValue(error)

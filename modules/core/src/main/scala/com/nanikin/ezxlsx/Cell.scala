@@ -19,7 +19,8 @@ object Cell {
   private[ezxlsx] final case class Arg(
       id: Option[String] = None,
       classes: Seq[String] = Seq.empty,
-      settings: Settings = Settings()
+      settings: Settings = Settings(),
+      mapper: Option[ValueMapper] = None
   ) extends Cell
 
   def arg: Arg = Arg()
@@ -36,6 +37,7 @@ object Cell {
   implicit class ArgCellOps(cell: Arg) {
     def withId(id: String): Arg = cell.copy(id = id.some)
     def withClasses(classes: String*): Arg = cell.copy(classes = classes)
+    def withMapper(mapper: ValueMapper): Arg = cell.copy(mapper = mapper.some)
 
     def withSettings(
         autoFilter: Boolean = false

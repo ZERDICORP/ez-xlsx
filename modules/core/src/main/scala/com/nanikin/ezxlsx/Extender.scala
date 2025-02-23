@@ -156,16 +156,18 @@ object Extender {
             classes = classes,
             settings = settings,
             xy = (0, 0),
-            inOneCopy = true
+            inOneCopy = true,
+            mapper = none
           )
-        case Cell.Arg(id, classes, settings) =>
+        case Cell.Arg(id, classes, settings, mapper) =>
           PrepCell(
             id = id,
             value = none,
             classes = classes,
             settings = settings,
             xy = (0, 0),
-            inOneCopy = true
+            inOneCopy = true,
+            mapper = mapper
           )
       }
     def prepRows(rows: Seq[Row]): Seq[PrepRow] = {

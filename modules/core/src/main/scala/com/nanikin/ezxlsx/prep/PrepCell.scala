@@ -1,6 +1,7 @@
 package com.nanikin.ezxlsx.prep
 
 import com.nanikin.ezxlsx.Cell.Settings
+import com.nanikin.ezxlsx.ValueMapper
 import com.nanikin.ezxlsx.Value
 
 private[ezxlsx] final case class PrepCell(
@@ -9,5 +10,6 @@ private[ezxlsx] final case class PrepCell(
     classes: Seq[String],
     settings: Settings,
     xy: (Int, Int),
-    inOneCopy: Boolean
+    inOneCopy: Boolean,
+    mapper: Option[ValueMapper]
 )

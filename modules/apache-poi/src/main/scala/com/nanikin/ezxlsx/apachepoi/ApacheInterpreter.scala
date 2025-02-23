@@ -1,5 +1,6 @@
 package com.nanikin.ezxlsx.apachepoi
 
+import cats.implicits.catsSyntaxOptionId
 import com.nanikin.ezxlsx._
 import com.nanikin.ezxlsx.prep.PrepCell
 import com.nanikin.ezxlsx.prep.PrepRow
@@ -36,7 +37,7 @@ private[apachepoi] object ApacheInterpreter {
         stylesTable: Map[String, Class],
         poses: PosMap
     ): Unit =
-      cells.zipWithIndex.foreach { case (cell, x) =>
+      cells.zipWithIndex.foldLeft(Option.empty[Int]) { case (agg, (cell, x)) =>
         val xCell: XSSFCell = xRow.createCell(x)
         cell.value.foreach { value =>
           applyStyles(xCell, xSheet, value, cell.xy, commonClasses ++ cell.classes)
@@ -51,10 +52,18 @@ private[apachepoi] object ApacheInterpreter {
               }
           }
         }
-        if (cell.settings.autoFilter) {
-          xSheet.setAutoFilter(
-            new CellRangeAddress(xRow.getRowNum, xRow.getRowNum, xCell.getColumnIndex, xCell.getColumnIndex)
-          )
+        (cell.settings.autoFilter, agg) match {
+          case (true, Some(x)) =>
+            xSheet.setAutoFilter(
+              new CellRangeAddress(xRow.getRowNum, xRow.getRowNum, x, xCell.getColumnIndex)
+            )
+            x.some
+          case (true, None) =>
+            xSheet.setAutoFilter(
+              new CellRangeAddress(xRow.getRowNum, xRow.getRowNum, xCell.getColumnIndex, xCell.getColumnIndex)
+            )
+            xCell.getColumnIndex.some
+          case (false, _) => agg
         }
       }
 

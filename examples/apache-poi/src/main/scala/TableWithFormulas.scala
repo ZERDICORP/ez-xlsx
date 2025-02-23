@@ -20,7 +20,7 @@ object TableWithFormulas extends App {
       Cell("Product").withSettings(autoFilter = true),
       Cell("Price"),
       Cell("Tax"),
-      Cell("Tax Percent")
+      Cell("Tax Percent").withSettings(autoFilter = true)
     ).withSettings(height = 30),
     Row(
       Cell.empty,

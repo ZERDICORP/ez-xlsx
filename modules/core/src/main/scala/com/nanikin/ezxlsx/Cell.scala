@@ -30,8 +30,9 @@ object Cell {
     def withClasses(classes: String*): Default = cell.copy(classes = classes)
 
     def withSettings(
-        autoFilter: Boolean = false
-    ): Default = cell.copy(settings = Settings(autoFilter))
+        autoFilter: Boolean = false,
+        merge: Boolean = false
+    ): Default = cell.copy(settings = Settings(autoFilter, merge))
   }
 
   implicit class ArgCellOps(cell: Arg) {
@@ -40,11 +41,13 @@ object Cell {
     def withMapper(mapper: ValueMapper): Arg = cell.copy(mapper = mapper.some)
 
     def withSettings(
-        autoFilter: Boolean = false
-    ): Arg = cell.copy(settings = Settings(autoFilter))
+        autoFilter: Boolean = false,
+        merge: Boolean = false
+    ): Arg = cell.copy(settings = Settings(autoFilter, merge))
   }
 
   final case class Settings(
-      autoFilter: Boolean = false
+      autoFilter: Boolean = false,
+      merge: Boolean = false
   )
 }

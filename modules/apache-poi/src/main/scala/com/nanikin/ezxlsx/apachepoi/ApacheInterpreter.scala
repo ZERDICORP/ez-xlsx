@@ -36,8 +36,8 @@ private[apachepoi] object ApacheInterpreter {
     def addCells(xSheet: XSSFSheet, xRow: XSSFRow, cells: Seq[PrepCell], commonClasses: Seq[String])(implicit
         stylesTable: Map[String, Class],
         poses: PosMap
-    ): Unit =
-      cells.zipWithIndex.foldLeft(Option.empty[Int]) { case (agg, (cell, x)) =>
+    ): Unit = {
+      cells.zipWithIndex.foreach { case (cell, x) =>
         val xCell: XSSFCell = xRow.createCell(x)
 
         def withMapping(v: Value): Value =
@@ -64,6 +64,11 @@ private[apachepoi] object ApacheInterpreter {
               }
           }
         }
+      }
+
+      /* auto filter */
+      cells.zipWithIndex.foldLeft(Option.empty[Int]) { case (agg, (cell, x)) =>
+        val xCell: XSSFCell = xRow.getCell(x)
         (cell.settings.autoFilter, agg) match {
           case (true, Some(x)) =>
             xSheet.setAutoFilter(
@@ -78,6 +83,21 @@ private[apachepoi] object ApacheInterpreter {
           case (false, _) => agg
         }
       }
+
+      /* merging */
+      cells.zipWithIndex.foldLeft(Option.empty[Int]) { case (agg, (cell, x)) =>
+        val xCell: XSSFCell = xRow.getCell(x)
+        (cell.settings.merge, agg) match {
+          case (true, Some(x)) =>
+            xSheet.addMergedRegion(
+              new CellRangeAddress(xRow.getRowNum, xRow.getRowNum, x, xCell.getColumnIndex)
+            )
+            x.some
+          case (true, None) => xCell.getColumnIndex.some
+          case (false, _) => agg
+        }
+      }
+    }
 
     def addRows(xSheet: XSSFSheet, rows: Seq[PrepRow], start: Int)(implicit
         stylesTable: Map[String, Class],

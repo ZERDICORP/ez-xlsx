@@ -23,10 +23,10 @@ private[apachepoi] object ApacheInterpreter {
 
       classes.flatMap(stylesTable.get).foreach {
         case Class.Static(_, styles) => ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles)
-        case Class.ValDependent(_, styles) => ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value))
+        case Class.ValDependent(_, styles) => ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value.v))
         case Class.PosDependent(_, styles) =>
-          ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value, xy))
-        case Class.Raw(_, styles) => styles(cellStyle, value)
+          ApacheStyle.apply(wb, xSheet, cellStyle, font, cellRef, styles(value.v, xy))
+        case Class.Raw(_, styles) => styles(cellStyle, value.v)
       }
 
       cellStyle.setFont(font)

@@ -5,7 +5,7 @@ import cats.implicits.catsSyntaxOptionId
 sealed trait Sheet {
   val name: String
   val id: Option[String]
-  val colsWidth: Map[Int, Int]
+  val colsWidth: Seq[ColWidth]
   val colsInFreeze: Int
   val rowsInFreeze: Int
   val rows: Seq[Row]
@@ -18,7 +18,7 @@ object Sheet {
       rows: Seq[Row.Default],
       name: String = "unnamed",
       id: Option[String] = None,
-      colsWidth: Map[Int, Int] = Map.empty,
+      colsWidth: Seq[ColWidth] = Seq.empty,
       colsInFreeze: Int = 0,
       rowsInFreeze: Int = 0,
       styles: Seq[Class] = Seq.empty
@@ -29,7 +29,7 @@ object Sheet {
   implicit class SheetOps(sheet: Default) {
     def withName(name: String): Default = sheet.copy(name = name)
     def withId(id: String): Default = sheet.copy(id = id.some)
-    def withColsWidth(colsWidth: (Int, Int)*): Default = sheet.copy(colsWidth = colsWidth.toMap)
+    def withColsWidth(colsWidth: ColWidth*): Default = sheet.copy(colsWidth = colsWidth)
 
     def withFreeze(cols: Int = 0, rows: Int = 0): Default = sheet.copy(
       colsInFreeze = cols,

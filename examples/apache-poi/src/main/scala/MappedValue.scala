@@ -21,8 +21,8 @@ object MappedValue extends App {
     .withName("Boys")
     .withId("boys")
     .withColsWidth(
-      (0, 15),
-      (1, 15)
+      15,
+      15
     )
     .withFreeze(rows = 1)
 

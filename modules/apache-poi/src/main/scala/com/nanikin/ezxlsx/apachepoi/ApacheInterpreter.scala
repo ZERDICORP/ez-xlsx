@@ -118,6 +118,11 @@ private[apachepoi] object ApacheInterpreter {
         y + nestSize
       }
 
+    def colIndexesById(id: String)(implicit poses: PosMap): Seq[Int] =
+      poses.collectFirst {
+        case (_: Pos.Key.Y, Pos.Value.XYMap(map)) if map.exists { case (k, _) => k == id } => map(id)
+      }.getOrElse(Seq.empty)
+
     sheets.foreach { sheet: PrepSheet =>
       implicit val stylesTable: Map[String, Class] = sheet.styles.map(x => x.className -> x).toMap
       implicit val poses: PosMap = sheet.poses
@@ -127,8 +132,14 @@ private[apachepoi] object ApacheInterpreter {
       xSheet.setRowSumsBelow(false)
       xSheet.createFreezePane(sheet.colsInFreeze, sheet.rowsInFreeze)
 
-      sheet.colsWidth.map { case (key, width) =>
-        xSheet.setColumnWidth(key, width * 256)
+      sheet.colsWidth.foldLeft(0) {
+        case (idx, ColWidth.Default(width)) =>
+          xSheet.setColumnWidth(idx, (width * 256).toInt)
+          idx + 1
+        case (idx, ColWidth.CellId(id, width)) =>
+          val lst = colIndexesById(id)
+          lst.foreach(xSheet.setColumnWidth(_, (width * 256).toInt))
+          idx + lst.size
       }
     }
 

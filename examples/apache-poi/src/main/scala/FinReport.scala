@@ -54,12 +54,10 @@ object FinReport extends App {
   )
     .withName("Financial Report")
     .withId("fin-report")
-    .withColsWidth(
-      15,
-      15,
-      12,
-      12,
-      12
+    .withCols(
+      Col(width = 15),
+      Col(width = 15),
+      Col(width = 12).repeat(3)
     )
     .withStyles(styles)
     .withFreeze(cols = 2, rows = 1)

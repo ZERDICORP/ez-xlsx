@@ -25,7 +25,10 @@ object NestedTable extends App {
   )
     .withName("Population")
     .withId("population-sheet")
-    .withColsWidth(15, 15)
+    .withCols(
+      Col(width = 15),
+      Col(width = 15)
+    )
 
   val template = Template
     .sheet(sheet)

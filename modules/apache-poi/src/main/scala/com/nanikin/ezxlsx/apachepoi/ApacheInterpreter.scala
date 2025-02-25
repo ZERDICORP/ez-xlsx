@@ -118,11 +118,6 @@ private[apachepoi] object ApacheInterpreter {
         y + nestSize
       }
 
-    def colIndexesById(id: String)(implicit poses: PosMap): Seq[Int] =
-      poses.collectFirst {
-        case (_: Pos.Key.Y, Pos.Value.XYMap(map)) if map.exists { case (k, _) => k == id } => map(id)
-      }.getOrElse(Seq.empty)
-
     sheets.foreach { sheet: PrepSheet =>
       implicit val stylesTable: Map[String, Class] = sheet.styles.map(x => x.className -> x).toMap
       implicit val poses: PosMap = sheet.poses
@@ -132,14 +127,28 @@ private[apachepoi] object ApacheInterpreter {
       xSheet.setRowSumsBelow(false)
       xSheet.createFreezePane(sheet.colsInFreeze, sheet.rowsInFreeze)
 
-      sheet.colsWidth.foldLeft(0) {
-        case (idx, ColWidth.Default(width)) =>
-          xSheet.setColumnWidth(idx, (width * 256).toInt)
-          idx + 1
-        case (idx, ColWidth.CellId(id, width)) =>
-          val lst = colIndexesById(id)
-          lst.foreach(xSheet.setColumnWidth(_, (width * 256).toInt))
-          idx + lst.size
+      sheet.cols.map { case c: Col.Default =>
+        Seq.fill(Math.max(c.repeats, 1))(c)
+      }.foldLeft(0) { case (idx, cols: Seq[Col.Default]) =>
+        cols.zipWithIndex.foreach { case (c, i) =>
+          xSheet.setColumnWidth(idx + i, (c.width * 256).toInt)
+        }
+
+        cols match {
+          case Seq(one) if one.collapse =>
+            xSheet.groupColumn(idx, idx)
+            xSheet.setColumnGroupCollapsed(idx, true)
+          case many =>
+            many.zipWithIndex.foreach {
+              case (c, i) if c.collapse =>
+                xSheet.groupColumn(idx + i, idx + i)
+                xSheet.setColumnGroupCollapsed(idx + i, true)
+              case _ => ()
+            }
+          case _ => ()
+        }
+
+        idx + cols.size
       }
     }
 

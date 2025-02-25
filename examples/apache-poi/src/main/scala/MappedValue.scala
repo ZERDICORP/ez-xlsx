@@ -20,9 +20,9 @@ object MappedValue extends App {
   )
     .withName("Boys")
     .withId("boys")
-    .withColsWidth(
-      15,
-      15
+    .withCols(
+      Col(width = 15),
+      Col(width = 15)
     )
     .withFreeze(rows = 1)
 

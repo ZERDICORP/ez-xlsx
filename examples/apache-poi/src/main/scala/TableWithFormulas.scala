@@ -39,11 +39,11 @@ object TableWithFormulas extends App {
   )
     .withName("Cart")
     .withId("cart-sheet")
-    .withColsWidth(
-      15,
-      15,
-      15,
-      15
+    .withCols(
+      Col(width = 15),
+      Col(width = 15),
+      Col(width = 15),
+      Col(width = 15)
     )
     .withStyles(styles)
 

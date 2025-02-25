@@ -11,6 +11,7 @@ import scala.collection.mutable
 
 trait Extender {
   def row(sheetId: String, rowId: String, data: Seq[Data]): Extender
+  def repeatCol(sheetId: String, colId: String, times: Int): Extender
 
   def interpret[A: Interpreter](): Interpretation[A]
 
@@ -74,6 +75,19 @@ object Extender {
 
       val extendedSheets = sheets.map {
         case sheet: PrepSheet if sheet.id.contains(sheetId) => sheet.copy(rows = extend(sheet.rows))
+        case other => other
+      }
+      new Impl(extendedSheets)
+    }
+
+    override def repeatCol(sheetId: String, colId: String, times: Int): Extender = {
+      val extendedSheets = sheets.map {
+        case sheet: PrepSheet if sheet.id.contains(sheetId) =>
+          val cols = sheet.cols.map {
+            case col: Col.Default if col.id.contains(colId) => col.copy(repeats = times)
+            case other => other
+          }
+          sheet.copy(cols = cols)
         case other => other
       }
       new Impl(extendedSheets)
@@ -194,7 +208,7 @@ object Extender {
       PrepSheet(
         name = sheet.name,
         id = sheet.id,
-        colsWidth = sheet.colsWidth,
+        cols = sheet.cols,
         colsInFreeze = sheet.colsInFreeze,
         rowsInFreeze = sheet.rowsInFreeze,
         rows = prepRows(sheet.rows),

@@ -71,7 +71,7 @@ private[apachepoi] object ApacheStyle {
 
       case Style.BgColorHex(hex) =>
         val color = Color.decode(hex)
-        val xssfColor = new XSSFColor(color, null)
+        val xssfColor = new XSSFColor(color, new DefaultIndexedColorMap())
         cellStyle.setFillForegroundColor(xssfColor)
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
 

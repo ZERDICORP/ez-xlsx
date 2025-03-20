@@ -26,7 +26,7 @@ Add the following lines to your `build.sbt`:
 ```sbt
 lazy val `ez-xlsx-apache-poi` = ProjectRef.apply(file("ez-xlsx"), "ez-xlsx-apache-poi")
 
-  [...].dependsOn(`ez-xlsx-apache-poi`)
+[...].dependsOn(`ez-xlsx-apache-poi`)
 ```
 
 > 🟢 All usage examples can be found [**here**](https://github.com/ZERDICORP/ez-xlsx/tree/master/examples/apache-poi/src/main/scala).

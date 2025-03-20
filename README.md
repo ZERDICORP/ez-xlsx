@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/release-v4.0.1-brightgreen">
+  <img src="https://img.shields.io/badge/release-v4.0.2-brightgreen">
   <img src="https://img.shields.io/badge/scala_version-v2.11.5-orange">
   <img src="https://github.com/ZERDICORP/ez-xlsx/actions/workflows/scala.yml/badge.svg">
   <img src="https://img.shields.io/github/last-commit/ZERDICORP/ez-xlsx">
@@ -18,10 +18,15 @@
 ***Ez-Xlsx is a lightweight Scala library for generating Excel files, built on top of Apache POI. It provides a clean and expressive API to simplify `.xlsx` file creation.***
 
 ## 🔧 Installation
-Add the following lines to your `build.sbt`:  
+Clone this repo to your project:
+```bash
+git clone https://github.com/ZERDICORP/ez-xlsx.git
+```
+Add the following lines to your `build.sbt`:
 ```sbt
-resolvers += "Reposilite".at("https://repo.nanikin.ru/releases")
-libraryDependencies += "com.nanikin" %% "ez-xlsx-apache-poi" % "4.0.1"
+lazy val `ez-xlsx-apache-poi` = ProjectRef.apply(file("ez-xlsx"), "ez-xlsx-apache-poi")
+
+  [...].dependsOn(`ez-xlsx-apache-poi`)
 ```
 
 > 🟢 All usage examples can be found [**here**](https://github.com/ZERDICORP/ez-xlsx/tree/master/examples/apache-poi/src/main/scala).

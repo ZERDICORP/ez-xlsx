@@ -1,6 +1,5 @@
-ThisBuild / version := "4.0.1"
-ThisBuild / versionScheme := Some("semver-spec")
-ThisBuild / scalaVersion := "2.11.5"
+version in ThisBuild := "4.0.2"
+scalaVersion in ThisBuild := "2.11.5"
 
 lazy val root = (project in file("."))
   .settings(

@@ -15,14 +15,7 @@ lazy val `ez-xlsx-core` = (project in file("modules/core"))
       "org.typelevel" %% "cats-core" % "2.0.0",
       "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test"
     ),
-    organization := "com.nanikin",
-    credentials += Credentials(
-      "Reposilite",
-      "repo.nanikin.ru",
-      "admin",
-      sys.env.getOrElse("REPO_TOKEN", "n/a")
-    ),
-    publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
+    organization := "com.nanikin"
   )
 
 lazy val `ez-xlsx-apache-poi` = (project in file("modules/apache-poi"))
@@ -34,14 +27,7 @@ lazy val `ez-xlsx-apache-poi` = (project in file("modules/apache-poi"))
       "org.apache.poi" % "poi-ooxml" % "5.3.0",
       "org.scalatest" %% "scalatest-funsuite" % "3.2.19" % "test"
     ),
-    organization := "com.nanikin",
-    credentials += Credentials(
-      "Reposilite",
-      "repo.nanikin.ru",
-      "admin",
-      sys.env.getOrElse("REPO_TOKEN", "n/a")
-    ),
-    publishTo := Some("Reposilite".at("https://repo.nanikin.ru/releases"))
+    organization := "com.nanikin"
   )
   .dependsOn(`ez-xlsx-core`)
 

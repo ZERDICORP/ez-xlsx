@@ -1,7 +1,5 @@
 .idea/
 **/target/
-deploy/*.dmg
 .DS_Store
 .bsp/
 *.xlsx
-.env
